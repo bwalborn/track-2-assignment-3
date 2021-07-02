@@ -13,17 +13,21 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
      * The underlying list of type T.
      */
     // TODO - you fill in here.
-
+    // private LinkedList<T> list;
     /**
      * The current size of the array.
      */
     // TODO - you fill in here.
+    private int ListCounter;
 
+    private Node head;
+
+    private int size;
     /**
      * Default value for elements in the array.
      */
     // TODO - you fill in here.
-
+    private T defaultValue;
     /**
      * Constructs an array of the given size.
      *
@@ -32,6 +36,8 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
      */
     public LinkedList(int size) throws NegativeArraySizeException {
         // TODO - you fill in here.
+        this.size = size;
+        this.ListCounter = size;
     }
 
     /**
@@ -44,6 +50,8 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
      */
     public LinkedList(int size, T defaultValue) throws NegativeArraySizeException {
         // TODO - you fill in here.
+        this.size = size;
+        this.defaultValue = defaultValue;
     }
 
     /**
@@ -53,7 +61,18 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
      */
     public LinkedList(LinkedList<T> s) {
         // TODO - you fill in here.
-
+        // this.list = new LinkedList<>(s);
+        // this.size = s.size;
+        this.ListCounter = s.size;
+        this.defaultValue = s.defaultValue;
+        this.head = s.head;
+        Node node = s.head;
+        Node adder = this.head;
+        this.head = new Node(s.head.value);
+        while(node.next != null){
+            adder.next = new Node(node.value);
+            node = node.next;
+        }
     }
 
     /**
@@ -61,8 +80,20 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
      */
     public int size() {
         // TODO - you fill in here (replace 0 with proper return value).
-        return 0;
+        // return 0;
+        return this.ListCounter;
     }
+
+
+    private void incrementCounter(){
+        this.ListCounter++;
+    }
+
+    private void decrementCounter(){
+        this.ListCounter--;
+    }
+
+
 
     /**
      * Resizes the array to the requested size.
@@ -75,6 +106,10 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
      */
     public void resize(int size) {
         // TODO - you fill in here.
+        // list.resize(size);
+        int determineLength = Math.min(this.size, size);
+        if(determineLength > 0)    // --------------------------------------- FIX ----------------------------------------
+            
     }
 
     /**
@@ -84,7 +119,14 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
      */
     public T get(int index) {
         // TODO - you fill in here (replace null with proper return value).
-        return null;
+        if(index < 0 || index > size){
+            throw new ArrayIndexOutOfBoundsException();
+        }
+        for(int i = 0; i < size; i++){
+            if(i == index){
+                return null;
+            }
+        }
     }
 
     /**
@@ -96,6 +138,14 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
      */
     public void set(int index, T value) {
         // TODO - you fill in here.
+        Node tempNode = new Node(value);
+        Node currentNode = this.head;
+
+        if(currentNode != null){
+            for(int i = 0; i < index && currentNode.next != null; i++) {
+                currentNode = currentNode.next;
+            }
+        }
     }
 
   
@@ -140,11 +190,15 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
     private class Node {
         // TODO: Fill in any fields you require.
 
+        private Node prev;
+        private Node next;
+        private T value;
         /**
          * Default constructor (no op).
          */
         Node() {
             // TODO - you fill in here.
+            this.next = null;
         }
 
         /**
@@ -152,13 +206,26 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
          */
         Node(Node prev) {
             // TODO - you fill in here.
+            this.prev = prev;
+            this.next = null;
         }
+
+
+        Node(T value) {   /// ------------------------------ added ----------------------------------
+            // TODO - you fill in here.
+            this.value = value;
+            this.next = null;
+        }
+
 
         /**
          * Construct a Node from a @a value and a @a prev Node.
          */
         Node(T value, Node prev) {
             // TODO - you fill in here.
+            this.value = value;
+            this.prev = prev;
+            this.next = null;
         }
     }
 
@@ -167,6 +234,7 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
      */
     private class ListIterator implements Iterator<T> {
         // TODO: Fill in any fields you require.
+        private int currentIndex;
 
         /**
          * Returns the next element in the iteration.
@@ -177,7 +245,10 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
         @Override
         public T next() {
             // TODO - you fill in here.
-            return null;
+            if(!(hasNext())){
+                throw new NoSuchElementException(); 
+            }
+            return null;    // --------------------------------------- FIX ----------------------------------------
         }
 
         /**
@@ -210,6 +281,8 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
         @Override
         public boolean hasNext() {
             // TODO - you fill in here.
+            if(currentIndex < LinkedList.this.list.size) return true;       // --------------------------------------- FIX ----------------------------------------
+
             return false;
         }
     }
