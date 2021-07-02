@@ -281,7 +281,7 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
         @Override
         public boolean hasNext() {
             // TODO - you fill in here.
-            if(currentIndex < LinkedList.this.list.size) return true;       // --------------------------------------- FIX ----------------------------------------
+            if(currentIndex < LinkedList.this.list.size) return true;       // --------------------------------------- FIX -> REMOVE LINKEDLIST ----------------------------------------
 
             return false;
         }
