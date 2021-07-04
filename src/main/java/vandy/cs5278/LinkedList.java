@@ -108,7 +108,7 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
         // TODO - you fill in here.
         // list.resize(size);
         int determineLength = Math.min(this.size, size);
-        if(determineLength > 0)    // --------------------------------------- FIX ----------------------------------------
+        // if(determineLength > 0)    // --------------------------------------- FIX ----------------------------------------
             
     }
 
@@ -175,7 +175,16 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
     @Override
     public int compareTo(LinkedList<T> s) {
         // TODO - you fill in here (replace 0 with proper return value).
-        return 0;
+
+        if (this.size < s.size){
+            return -1;
+        }
+        else if (this.size > s.size){
+            return 1;
+        }
+        else{
+            return 0;
+        }
     }
 
 
