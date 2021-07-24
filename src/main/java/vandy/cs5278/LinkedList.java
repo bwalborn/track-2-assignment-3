@@ -1,5 +1,5 @@
-/* @author Vanderbilt University, copyright 2019 - All rights reserved */
 package vandy.cs5278;
+/* @author Vanderbilt University, copyright 2019 - All rights reserved */
 
 import java.lang.ArrayIndexOutOfBoundsException;
 import java.nio.channels.IllegalSelectorException;
@@ -10,24 +10,11 @@ import java.util.NoSuchElementException;
  * Provides a generic dynamically-(re)sized array abstraction.
  */
 public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedList<T>>, Iterable<T> {
-    /**
-     * The underlying list of type T.
-     */
-    // TODO - you fill in here.
-    // private LinkedList<T> list;
-    /**
-     * The current size of the array.
-     */
-    // TODO - you fill in here.
-    private int ListCounter;
 
-    public Node head;
+    private int listSize = 0;
 
-    private int size;
-    /**
-     * Default value for elements in the array.
-     */
-    // TODO - you fill in here.
+    public Node<T> head;
+
     private T defaultValue;
     /**
      * Constructs an array of the given size.
@@ -36,10 +23,12 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
      * @throws NegativeArraySizeException if the specified size is negative.
      */
     public LinkedList(int size) throws NegativeArraySizeException {
-        // TODO - you fill in here.
-        // this.size = size;
-        if(size < 0) throw new NegativeArraySizeException();
-        this.ListCounter = size;
+        if (size < 0) {
+            throw new NegativeArraySizeException();
+        } 
+        for (int i = 0; i < size; i++) {
+            add(null); // ----------------------
+        }
     }
 
     /**
@@ -50,22 +39,17 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
      * @param defaultValue A default value for the array.
      * @throws NegativeArraySizeException if the specified size is negative.
      */
-    public LinkedList(int size, T defaultValue) throws NegativeArraySizeException {
+    public LinkedList(int size, T data) throws NegativeArraySizeException {
         // TODO - you fill in here.
-        if(size < 0) throw new NegativeArraySizeException();
-        this.ListCounter = size;
-        this.defaultValue = defaultValue;
-        this.head = new Node(defaultValue);
-        Node node = this.head;
-        for(int i = 0; i<size-1; i++){
-            // node.next = new Node(defaultValue);
-            // Node temp = new Node(defaultValue);
-
-            node.next = new Node(defaultValue);
-            // node.setNext(new Node(defaultValue));
-        
-            node = node.next;
+        if(size < 0) {
+            throw new NegativeArraySizeException();
         }
+
+        this.defaultValue = data;
+        for(int i = 0; i<size; i++){
+            add(data);
+        }
+        this.listSize = size;
     }
 
     /**
@@ -74,53 +58,63 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
      * @param s The array to be copied.
      */
     public LinkedList(LinkedList<T> s) {
-        // TODO - you fill in here.
-        // this.list = new LinkedList<>(s);
-        // this.size = s.size;
-        this.ListCounter = s.ListCounter;
-        this.defaultValue = s.defaultValue;
-        this.head = s.head;
-        Node node = s.head;
-        Node adder = this.head;
-        // this.head = new Node(s.head.value);
-        while(node.next != null){
-            adder.next = new Node(node.getData()); //node.value
-            node = node.next;
+
+        for (int i = 0; i < s.size(); i++) {
+            add(s.getNode(i).getData());
         }
-        // // TODO - you fill in here.
-        // // this.list = new LinkedList<>(s);
-        // // this.size = s.size;
-        // this.ListCounter = s.size;
-        // this.defaultValue = s.defaultValue;
-        // this.head = s.head;
-        // Node node = s.head;
-        // Node adder = this.head;
-        // this.head = new Node(s.head.value);
-        // while(node.next != null){
-        //     adder.next = new Node(node.value);
-        //     node = node.next;
-        // }
+        this.listSize = s.listSize;
+        this.defaultValue = s.defaultValue;
+        
+    }
+
+    private void add(T data) {
+
+        if (this.head == null){
+            this.head = new Node<T>(data);
+        }
+        else {
+                Node<T> newNode = new Node<T>(data);
+                Node<T> tail = getNode(listSize - 1);
+                tail.setNext(newNode); //tail.setNext(newNode); 
+                newNode.setPrev(tail);
+            }
+            this.listSize++;
+       
     }
 
     /**
      * @return The current size of the array.
      */
     public int size() {
-        // TODO - you fill in here (replace 0 with proper return value).
-        // return 0;
-        return this.ListCounter;
+        return this.listSize;
     }
 
 
-    private void incrementCounter(){
-        this.ListCounter++;
+
+    private Node<T> getNode(int index) {
+
+        // if (index < 0 || index > this.listSize) {
+        //     throw new IndexOutOfBoundsException();
+        // }
+
+        if (index == 0) {
+            return this.head;
+        }
+
+        int currentIndex = 0;
+        Node<T> curreNode = this.head;
+        while (currentIndex <= index) {
+            if(currentIndex == index){
+                return curreNode;
+            }
+            else {
+                curreNode = curreNode.getNext();
+                currentIndex++;
+            }
+        }
+        return null;
+
     }
-
-    private void decrementCounter(){
-        this.ListCounter--;
-    }
-
-
 
     /**
      * Resizes the array to the requested size.
@@ -132,39 +126,31 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
      * @param size Nonnegative requested new size.
      */
     public void resize(int size) {
-        // TODO - you fill in here.
-        // list.resize(size);
-        // int determineLength = Math.min(this.size, size);
-        // if(determineLength > 0)
-            // --------------------------------------- FIX ----------------------------------------
-        if(size > this.ListCounter){
-            Node node = this.head;
-            for(int i = 0; i < this.ListCounter && node.next != null; i++){
-                // node.next = new Node(defaultValue);
-                // node.setNext(new Node(defaultValue));
-                node = node.next;
-            }
 
-            for(int i = this.ListCounter; i < size; i++){
-                // node.next = new Node(this.defaultValue);
-                node.next = new Node(this.defaultValue);
-                // node.setNext(new Node(defaultValue));
-            
-                node = node.next;
-                incrementCounter();
+        if (size < 0) {
+            throw new NegativeArraySizeException();
+        }
+
+        if (size == 0) {
+            this.head = null;
+        }
+        else if (size < this.listSize) {
+            Node<T> currentNode = getNode(size);
+            currentNode.setPrev(null);
+
+            currentNode = getNode(size - 1);
+            currentNode.next = null;
+    
+        }
+        else if (size > this.listSize) {
+            for (int i = this.listSize; i < size; i++) {
+                // this.listSize++;
+                add(this.defaultValue);
             }
         }
-        else if (size < this.ListCounter){
-            // Node node = this.head;
-            // for(int i = 0; i < size; i++){
-            //     // node.next = new Node(defaultValue);
-            //     // node.setNext(new Node(defaultValue));
-            
-            //     node = node.next;
-            // }
-            this.ListCounter = size;
-        }
+        this.listSize = size;
     }
+ 
 
     /**
      * @param index Nonnegative index of the requested element.
@@ -173,22 +159,10 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
      */
     public T get(int index) {
         // TODO - you fill in here (replace null with proper return value).
-        if(index < 0 || index > ListCounter){
-            throw new ArrayIndexOutOfBoundsException();
-        }
+        checkIndexOutOfBounds(index);
+        Node<T> currentNode = getNode(index);
+        return currentNode.getData();
         
-        // for(int i = 0; i < size; i++){
-        if(this.head == null){
-            return null;
-        }
-        Node tempNode = this.head;
-        for(int i = 0; i < index && tempNode.next != null; i++){
-            // if(tempNode.getNext() == null){
-            //     throw new ArrayIndexOutOfBoundsException();
-            // }
-            tempNode = tempNode.next;
-        }
-        return tempNode.getData();
     }
 
     /**
@@ -198,35 +172,24 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
      * @param value A provided value.
      * @throws ArrayIndexOutOfBoundsException If the requested index is outside the current bounds of the array.
      */
-    public void set(int index, T value) {
+    public void set(int index, T data) {
         // TODO - you fill in here.
-        // Node tempNode = new Node(value);
-        if(index > this.ListCounter || index < 0){
-            throw new ArrayIndexOutOfBoundsException();
-        }
-        Node currentNode = this.head;
+        checkIndexOutOfBounds(index);
+        Node<T> currentNode = getNode(index);
+        currentNode.setData(data); //currentNode.value = data; 
+        
+    }
 
-        if(currentNode != null){
-        // for(int i = 0; i < index && currentNode.next != null; i++) {
-        if(index > 0){
-            for(int i = 0; i < index; i++) {
-                // if(i == index){
-                //     currentNode.setData(value);
-                // }
-                currentNode = currentNode.next;
-            }
-            currentNode.value = value;
-        }
-        else {
-            // currentNode.value = value;
-            currentNode.setData(value);
-        }
-        // currentNode.next = new Node(value);
-        // currentNode.setData(value);
+
+
+
+    private void checkIndexOutOfBounds(int index) {
+        if(index < 0 || index > this.listSize){
+            throw new ArrayIndexOutOfBoundsException();
         }
     }
 
-  
+
     /**
      * Removes the element at the specified position in this ListArray.
      * Shifts any subsequent elements to the left (subtracts one from their
@@ -238,7 +201,28 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
      */
     public T remove(int index) {
         // TODO - you fill in here (replace null with proper return value.
-        return null;
+        checkIndexOutOfBounds(index);
+
+        Node<T> removeNode = getNode(index);
+
+        if (index == 0) {
+            Node<T> nextNode = this.head.getNext();
+            if (nextNode != null) {
+                nextNode.setPrev(null);
+            }
+            this.head = nextNode;
+        }
+        else if (index == this.listSize - 1) {
+            Node<T> secondLasNode = removeNode.getPrev();
+            secondLasNode.setNext(null);
+        }
+        else {
+            Node<T> previousNode = removeNode.getPrev();
+            Node<T> nextNode = removeNode.getNext();
+            previousNode.setNext(nextNode);
+        }
+        this.listSize--;
+        return removeNode.getData();
     }
 
     /**
@@ -254,49 +238,63 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
     public int compareTo(LinkedList<T> s) {
         // TODO - you fill in here (replace 0 with proper return value).
 
-        if (this.ListCounter < s.ListCounter){
-            return -1;
-        }
-        else if (this.ListCounter > s.ListCounter){
-            return 1;
-        }
-        else{
+        if(this == s) {
             return 0;
         }
+
+        for (int i = 0; i < this.size() && i < s.size(); i++){
+            if (this.get(i) != s.get(i)) {
+                char a = this.getNode(i).getData().toString().charAt(0);
+                char b = s.getNode(i).getData().toString().charAt(0);
+                return a - b;
+            }
+        }
+
+        if (this.size() == s.size()){
+            return 0;
+        }
+        else
+        {
+            return this.size() - s.size();
+        }
+ 
     }
 
 
+    /**
+     * Factory method that returns an Iterator.
+    */
+// public Iterator<T> iterator() { //OG
+    @Override
+    public Iterator<T> iterator() {
+        return new ListIterator();
+    }
 
-    private class Node {
-        // TODO: Fill in any fields you require.
 
-        // private Node prev;
-        // private Node next;
-        // private T value;
-        Node prev;
-        Node next;
+    private class Node<T> {
+        Node<T> prev;
+        Node<T> next;
         T value;
         /**
          * Default constructor (no op).
          */
         Node() {
-            // TODO - you fill in here.
-            // this.next = null;
+            this.value = null;
+            this.next = null;
+            this.prev = null;
         }
 
         /**
          * Construct a Node from a @a prev Node.
          */
         Node(Node prev) {
-            // TODO - you fill in here.
             this.prev = prev;
             this.next = null;
             this.value = null;
         }
 
 
-        Node(T value) {   /// ------------------------------ added ----------------------------------
-            // TODO - you fill in here.
+        Node(T value) {
             this.value = value;
             this.next = null;
             this.prev = null;
@@ -321,37 +319,36 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
             this.value = dataValue;
         }
 
-        public Node getNext(){
+        public Node<T> getNext(){
             return this.next;
         }
 
-        // public void setNext(Node nextValue){
-        public void setNext(Node nextValue){
+        public void setNext(Node<T> nextValue){
             this.next = nextValue;
         }
 
-        public Node getPrev(){
+        public Node<T> getPrev(){
             return this.prev;
         }
 
-        // public void setPrev(Node prevValue){
-        public void setPrev(Node prevValue){
+        public void setPrev(Node<T> prevValue){
             this.prev = prevValue;
         }
-
     }
+
 
     /**
      * This class implements an iterator for the list.
      */
     // private class ListIterator implements Iterator<T> {
-    public class ListIterator implements Iterator<T> {
+    private class ListIterator implements Iterator<T> {
         // TODO: Fill in any fields you require.
         // private int currentIndex;
         // private Node currentIndex;
-        private Node currentIndex = head;
-        private Node prev = null;
-        private boolean calledNext = false;
+        // private Node<T> currentIndex = head;
+        Node<T> currentIndex = head;
+        // private Node<T> prev = null;
+        private boolean calledNext = true;
 
         /**
          * Returns the next element in the iteration.
@@ -361,15 +358,19 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
          */
         @Override
         public T next() {  // OG
-            calledNext = true;
+            calledNext = false;
         // public Node next() {
             // TODO - you fill in here.
             if(!(hasNext())){
                 throw new NoSuchElementException(); 
             }
-            Node temp = currentIndex;
+            // Node<T> currentNode = currentIndex.next;
+            // Node<T> tempNode = currentIndex;
+            // currentIndex = currentIndex.next;
+            // return (T) tempNode;    // temp.value; --------------------------------------- FIX ----------------------------------------
+            T data = currentIndex.value;
             currentIndex = currentIndex.next;
-            return temp.value;    // --------------------------------------- FIX ----------------------------------------
+            return data;
         }
 
         /**
@@ -390,16 +391,18 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
         @Override
         public void remove() {
             // TODO - you fill in here.
-            if(!calledNext){
+            if(calledNext){
                 throw new IllegalStateException();
+            } else {
+                throw new UnsupportedOperationException("Remove not implemented.");
             }
-                if (currentIndex != null) {
-                    if (prev != null) {
-                        prev.next = currentIndex.next;
-                    } else {
-                        head = currentIndex.next;
-                    }
-                }
+            //     if (currentIndex != null) {
+            //         if (prev != null) {
+            //             prev.next = currentIndex.next;
+            //         } else {
+            //             head = currentIndex.next;
+            //         }
+            //     }
             }
            
             // throw new UnsupportedOperationException();
@@ -417,21 +420,14 @@ public class LinkedList<T extends Comparable<T>> implements Comparable<LinkedLis
         @Override
         public boolean hasNext() {
             // TODO - you fill in here.
-            if(currentIndex.next != null) return true;       // --------------------------------------- FIX -> REMOVE LINKEDLIST ----------------------------------------
+            // if(currentIndex != null) return true;       // --------------------------------------- FIX -> REMOVE LINKEDLIST ----------------------------------------if(currentIndex.next != null) return true; 
+
+            if (this.currentIndex != null) return true;
 
             return false;
         }
     }
 
-        /**
-     * Factory method that returns an Iterator.
-    */
-// public Iterator<T> iterator() { //OG
-    @Override
-    public Iterator<T> iterator() {
-        return new ListIterator();
-        // TODO - you fill in here (replace null with proper return value).
-        // return new ListIterator();
-    }
+  
 
 }
